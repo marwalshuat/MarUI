@@ -35,8 +35,8 @@ public class MainMenu : MonoBehaviour
 
     public void StartNewGame()
     {
-        //SceneManager.LoadScene("Level");
-        SceneManager.LoadScene(1);
+        GameManager.Instance.ChangeGameState(GameManager.GameState.PLAYING);
+        SceneManager.LoadScene("Level");
     }
 
     public void ChangeMasterVolume(float masterVolume)
@@ -51,6 +51,8 @@ public class MainMenu : MonoBehaviour
         mixer.GetFloat("MasterVolume", out mixerMasterVolume);
         PlayerPrefs.SetFloat("MasterVolume", mixerMasterVolume);
         PlayerPrefs.SetFloat("MasterVolumeSlider", masterVolumeSlider.value);
+        SaveMusicOptions();
+        SaveSFXOptions();
     }
 
     public void LoadOptions()
