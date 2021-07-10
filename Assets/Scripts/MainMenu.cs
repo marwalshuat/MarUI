@@ -25,11 +25,19 @@ public class MainMenu : MonoBehaviour
     {
         optionsmenu.SetActive(true);
         mainmenu.SetActive(false);
+        alertBox.SetActive(false);
     }
 
     public void CloseOptionMenu()
     {
         mainmenu.SetActive(true);
+        optionsmenu.SetActive(false);
+        alertBox.SetActive(false);
+    }
+
+        public void CloseMainMenu()
+    {
+        mainmenu.SetActive(false);
         optionsmenu.SetActive(false);
     }
 
@@ -37,6 +45,7 @@ public class MainMenu : MonoBehaviour
     {
         GameManager.Instance.ChangeGameState(GameManager.GameState.PLAYING);
         SceneManager.LoadScene("Level");
+        mainmenu.SetActive(false);
     }
 
     public void ChangeMasterVolume(float masterVolume)
@@ -44,47 +53,9 @@ public class MainMenu : MonoBehaviour
         mixer.SetFloat("MasterVolume", Mathf.Log10(masterVolume) * 20);
     }
 
-    public void SaveOptions()
-    {
-        Debug.Log("Saving Options");
-        float mixerMasterVolume;
-        mixer.GetFloat("MasterVolume", out mixerMasterVolume);
-        PlayerPrefs.SetFloat("MasterVolume", mixerMasterVolume);
-        PlayerPrefs.SetFloat("MasterVolumeSlider", masterVolumeSlider.value);
-        SaveMusicOptions();
-        SaveSFXOptions();
-    }
-
-    public void LoadOptions()
-    {
-        Debug.Log("Loading Options");
-        float mixerMasterVolume = PlayerPrefs.GetFloat("MasterVolume", 0f);
-        mixer.SetFloat("MasterVolume", mixerMasterVolume);
-        float masterSliderValue = PlayerPrefs.GetFloat("MasterVolumeSlider", 1f);
-        masterVolumeSlider.value = masterSliderValue;
-    }
-
     public void ChangeMusicVolume(float musicVolume)
     {
         mixer.SetFloat("MusicVolume", Mathf.Log10(musicVolume) * 20);
-    }
-
-    public void SaveMusicOptions()
-    {
-        Debug.Log("Saving Options");
-        float mixerMusicVolume;
-        mixer.GetFloat("MusicVolume", out mixerMusicVolume);
-        PlayerPrefs.SetFloat("MusicVolume", mixerMusicVolume);
-        PlayerPrefs.SetFloat("MusicVolumeSlider", musicVolumeSlider.value);
-    }
-
-    public void LoadMusicOptions()
-    {
-        Debug.Log("Loading Options");
-        float mixerMusicVolume = PlayerPrefs.GetFloat("MusicVolume", 0f);
-        mixer.SetFloat("MusicVolume", mixerMusicVolume);
-        float musicSliderValue = PlayerPrefs.GetFloat("MusicVolumeSlider", 1f);
-        musicVolumeSlider.value = musicSliderValue;
     }
 
     public void ChangeSFXVolume(float sfxVolume)
@@ -92,27 +63,55 @@ public class MainMenu : MonoBehaviour
         mixer.SetFloat("SFXVolume", Mathf.Log10(sfxVolume) * 20);
     }
 
-    public void SaveSFXOptions()
+    public void LoadOptions()
     {
-        Debug.Log("Saving Options");
-        float mixerSFXVolume;
-        mixer.GetFloat("SFXVolume", out mixerSFXVolume);
-        PlayerPrefs.SetFloat("SFXVolume", mixerSFXVolume);
-        PlayerPrefs.SetFloat("SFXVolumeSlider", sfxVolumeSlider.value);
-    }
-
-    public void LoadSFXOptions()
-    {
-        Debug.Log("Loading Options");
+        float mixerMasterVolume = PlayerPrefs.GetFloat("MasterVolume", 0f);
+        mixer.SetFloat("MasterVolume", mixerMasterVolume);
+        float masterSliderValue = PlayerPrefs.GetFloat("MasterVolumeSlider", 1f);
+        masterVolumeSlider.value = masterSliderValue;
+        float mixerMusicVolume = PlayerPrefs.GetFloat("MusicVolume", 0f);
+        mixer.SetFloat("MusicVolume", mixerMusicVolume);
+        float musicSliderValue = PlayerPrefs.GetFloat("MusicVolumeSlider", 1f);
+        musicVolumeSlider.value = musicSliderValue;
         float mixerSFXVolume = PlayerPrefs.GetFloat("SFXVolume", 0f);
         mixer.SetFloat("SFXVolume", mixerSFXVolume);
         float sfxSliderValue = PlayerPrefs.GetFloat("SFXVolumeSlider", 1f);
         sfxVolumeSlider.value = sfxSliderValue;
     }
 
+    public void SaveOptions()
+    {
+        float mixerMasterVolume;
+        float mixerMusicVolume;
+        float mixerSFXVolume;
+        mixer.GetFloat("MasterVolume", out mixerMasterVolume);
+        mixer.GetFloat("MusicVolume", out mixerMusicVolume);
+        mixer.GetFloat("SFXVolume", out mixerSFXVolume);
+        PlayerPrefs.SetFloat("MasterVolume", mixerMasterVolume);
+        PlayerPrefs.SetFloat("MasterVolumeSlider", masterVolumeSlider.value);
+        PlayerPrefs.SetFloat("MusicVolume", mixerMusicVolume);
+        PlayerPrefs.SetFloat("MusicVolumeSlider", musicVolumeSlider.value);
+        PlayerPrefs.SetFloat("SFXVolume", mixerSFXVolume);
+        PlayerPrefs.SetFloat("SFXVolumeSlider", sfxVolumeSlider.value);
+    }
+
     private void Start()
     {
-        LoadOptions();  
+        mainmenu.SetActive(true);
+        if (!PlayerPrefs.HasKey("MusicVolume") && !PlayerPrefs.HasKey("SFXVolume") && !PlayerPrefs.HasKey("MasterVolume"))
+        {
+            PlayerPrefs.SetFloat("MasterVolumeSlider", 1f);
+            PlayerPrefs.SetFloat("MasterVolume", 0f);
+            PlayerPrefs.SetFloat("MusicVolumeSlider", 1f);
+            PlayerPrefs.SetFloat("MusicVolume", 0f);
+            PlayerPrefs.SetFloat("SFXVolumeSlider", 1f);
+            PlayerPrefs.SetFloat("SFXVolume", 0f);
+            LoadOptions();
+        }
+        else
+        {
+            LoadOptions();
+        }
     }
 
     public void CheckForChanges()
@@ -120,20 +119,13 @@ public class MainMenu : MonoBehaviour
         float savedMasterVolume = PlayerPrefs.GetFloat("MasterVolume", 0f);
         float actualMasterVolume;
         mixer.GetFloat("MasterVolume", out actualMasterVolume);
-
-        //TODO: Actually set this information up in code and in editor.
         float savedMusicVolume = PlayerPrefs.GetFloat("MusicVolume", 0f);
         float actualMusicVolume;
         mixer.GetFloat("MusicVolume", out actualMusicVolume);
-
-        //TODO: Actually set this information up in code and in editor.
         float savedSFXVolume = PlayerPrefs.GetFloat("SFXVolume", 0f);
         float actualSFXVolume;
         mixer.GetFloat("SFXVolume", out actualSFXVolume);
-
-        if (Mathf.Approximately(savedMasterVolume, actualMasterVolume) &&
-            Mathf.Approximately(savedMusicVolume, actualMusicVolume) &&
-            Mathf.Approximately(savedSFXVolume, actualSFXVolume)) 
+        if (Mathf.Approximately(savedMasterVolume, actualMasterVolume) && Mathf.Approximately(savedMusicVolume, actualMusicVolume) && Mathf.Approximately(savedSFXVolume, actualSFXVolume)) 
         {
             // The values are the same
             CloseOptionMenu();
@@ -148,11 +140,13 @@ public class MainMenu : MonoBehaviour
     public void ShowAlertBox()
     {
         optionsmenu.SetActive(false);
+        mainmenu.SetActive(false);
         alertBox.SetActive(true);
     }
 
     public void CloseAlertBox()
     {
+        optionsmenu.SetActive(false);
         mainmenu.SetActive(true);
         alertBox.SetActive(false);
     }

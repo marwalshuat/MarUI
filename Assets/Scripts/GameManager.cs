@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public Events.EventGameStateChanged OnGameStateChanged = new Events.EventGameStateChanged(;
-    public enum GameState { MAINMENU, PLAYING, PAUSED };
+    public Events.EventGameStateChanged OnGameStateChanged = new Events.EventGameStateChanged();
+    public enum GameState { MAINMENU, PLAYING, PAUSED, OPTIONSMENU, CONTROLSMENU, PAUSEDOPTIONS, ALERTBOX, PAUSEDCONTROLS };
     private GameState currentGameState = GameState.MAINMENU;
     public GameState CurrentGameState
     {
@@ -34,7 +34,19 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 1f;
                 SceneManager.LoadScene("MainMenu");
                 break;
+            case GameState.OPTIONSMENU:
+                Time.timeScale = 1f;
+                break;
+            case GameState.CONTROLSMENU:
+                Time.timeScale = 1f;
+                break;
             case GameState.PAUSED:
+                Time.timeScale = 0f;
+                break;
+            case GameState.PAUSEDOPTIONS:
+                Time.timeScale = 0f;
+                break;
+            case GameState.PAUSEDCONTROLS:
                 Time.timeScale = 0f;
                 break;
             case GameState.PLAYING:
@@ -50,6 +62,17 @@ public class GameManager : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+        Debug.Log("Quitting the game");
+    }
+
+    public void PauseOptionsMenu()
+    {
+        ChangeGameState(GameState.PAUSEDOPTIONS);
+    }
+
+    public void PauseControlsMenu()
+    {
+        ChangeGameState(GameState.PAUSEDCONTROLS);
     }
 
     public void RestartGame()
@@ -62,10 +85,14 @@ public class GameManager : MonoBehaviour
         if (currentGameState == GameState.PAUSED)
         {
             ChangeGameState(GameState.PLAYING);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
         else
         {
             ChangeGameState(GameState.PAUSED);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 
@@ -75,13 +102,13 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(this.gameObject);
         }
         else
         {
             Debug.LogWarning("Attempted to create a second GameManager");
             Destroy(this);
         }
-        DontDestroyOnLoad(this.gameObject);
     }
 
     // Start is called before the first frame update
@@ -97,7 +124,7 @@ public class GameManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-
+                TogglePause();
             }
         }
     }

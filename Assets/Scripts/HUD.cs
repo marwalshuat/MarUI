@@ -7,7 +7,11 @@ public class HUD : MonoBehaviour
 {
     public float hitPoints = 3f;
     public float maxHitPoints = 3f;
-    public Image healthBar; 
+    public Image healthBar;
+
+    public float mana = 3f;
+    public float maxMana = 3f;
+    public Image manaBar;
 
     // Start is called before the first frame update
     void Start()
@@ -19,5 +23,6 @@ public class HUD : MonoBehaviour
     void Update()
     {
         healthBar.fillAmount = hitPoints / maxHitPoints;
+        manaBar.fillAmount = mana / maxMana;
     }
 }
