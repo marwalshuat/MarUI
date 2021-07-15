@@ -23,6 +23,7 @@ public class UIManager : MonoBehaviour
         switch (newState)
         {
             case GameManager.GameState.MAINMENU:
+                Debug.Log("This happened");
                 mainMenu.SetActive(true);
                 break;
             case GameManager.GameState.OPTIONSMENU:

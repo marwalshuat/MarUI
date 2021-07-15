@@ -128,7 +128,7 @@ public class MainMenu : MonoBehaviour
         if (Mathf.Approximately(savedMasterVolume, actualMasterVolume) && Mathf.Approximately(savedMusicVolume, actualMusicVolume) && Mathf.Approximately(savedSFXVolume, actualSFXVolume)) 
         {
             // The values are the same
-            CloseOptionMenu();
+            GameManager.Instance.ChangeGameState(GameManager.Instance.previousGameState);
         }
         else
         {
@@ -140,14 +140,14 @@ public class MainMenu : MonoBehaviour
     public void ShowAlertBox()
     {
         optionsmenu.SetActive(false);
-        mainmenu.SetActive(false);
         alertBox.SetActive(true);
     }
 
     public void CloseAlertBox()
     {
         optionsmenu.SetActive(false);
-        mainmenu.SetActive(true);
         alertBox.SetActive(false);
+        Debug.Log(GameManager.Instance.previousGameState);
+        GameManager.Instance.ChangeGameState(GameManager.Instance.previousGameState);
     }
 }

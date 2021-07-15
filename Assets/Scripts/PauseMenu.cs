@@ -37,7 +37,7 @@ public class PauseMenu : MonoBehaviour
 
     public void HandleOptions()
     {
-        GameManager.Instance.PauseOptionsMenu();
+        GameManager.Instance.ChangeGameState(GameManager.GameState.OPTIONSMENU);
     }
 
     public void HandleQuit()

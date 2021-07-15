@@ -319,7 +319,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8757874454046613186
 RectTransform:
   m_ObjectHideFlags: 0
@@ -417,7 +417,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitPoints: 2
   maxHitPoints: 3
-  healthBar: {fileID: 0}
-  mana: 3
+  healthBar: {fileID: 4486877546743262919}
+  mana: 2
   maxMana: 3
-  manaBar: {fileID: 0}
+  manaBar: {fileID: 7640581221035208832}

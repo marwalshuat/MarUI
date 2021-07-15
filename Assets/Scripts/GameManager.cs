@@ -3,12 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public Events.EventGameStateChanged OnGameStateChanged = new Events.EventGameStateChanged();
     public enum GameState { MAINMENU, PLAYING, PAUSED, OPTIONSMENU, CONTROLSMENU, PAUSEDOPTIONS, ALERTBOX, PAUSEDCONTROLS };
     private GameState currentGameState = GameState.MAINMENU;
+    public GameState previousGameState;
+    public Button optionsButton;
     public GameState CurrentGameState
     {
         get
@@ -25,7 +28,7 @@ public class GameManager : MonoBehaviour
 
     public void ChangeGameState(GameState newGameState)
     {
-        GameState previousGameState = currentGameState;
+        previousGameState = currentGameState;
         currentGameState = newGameState;
 
         switch (currentGameState)
@@ -107,7 +110,7 @@ public class GameManager : MonoBehaviour
         else
         {
             Debug.LogWarning("Attempted to create a second GameManager");
-            Destroy(this);
+            Destroy(this.gameObject);
         }
     }
 
@@ -115,8 +118,12 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         SceneManager.LoadScene("MainMenu");
+        optionsButton.onClick.AddListener(openOptionsMenu);
     }
-
+    public void openOptionsMenu()
+    {
+        GameManager.Instance.ChangeGameState(GameState.OPTIONSMENU);
+    }
     // Update is called once per frame
     void Update()
     {
